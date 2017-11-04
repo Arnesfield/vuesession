@@ -1,0 +1,21 @@
+{
+  "name": "vuesession",
+  "version": "1.0.0",
+  "description": "A simple session plugin for Vue.js.",
+  "main": "dist/vuesession.min.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arnesfield/vuesession.git"
+  },
+  "keywords": [
+    "vue",
+    "session",
+    "vue-plugin"
+  ],
+  "author": "Jefferson Rylee <rylee.jeff385@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Arnesfield/vuesession/issues"
+  },
+  "homepage": "https://github.com/Arnesfield/vuesession#readme"
+}
