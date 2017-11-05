@@ -2,14 +2,14 @@ var VueSession = {
 
   /**
    * Configuration object
-   * 
+   *
    * Modify via options.
    */
   config: {
-    
+
     /**
      * The key for the session.
-     * 
+     *
      * Default is 'vue-sess-key'
      */
     key: 'vue-sess-key',
@@ -23,9 +23,9 @@ var VueSession = {
 
   /**
    * Main getter method.
-   * 
+   *
    * Get the whole session object.
-   * 
+   *
    * @returns An object of data
    */
   _get: function() {
@@ -43,9 +43,9 @@ var VueSession = {
 
   /**
    * Main setter method.
-   * 
+   *
    * Add or overwrite an object in the session.
-   * 
+   *
    * @param {object} data An object - key-value pair to be added
    * @param {boolean} overwrite true if data should overwrite the current session
    * @returns true if successful; otherwise, false
@@ -75,23 +75,26 @@ var VueSession = {
 
   /**
    * Main delete method.
-   * 
+   *
    * Deletes a value in the session.
-   * 
+   *
    * @param {string} key The key of the data to be removed
    * @returns The _set() result
    */
   _delete: function(key) {
     var get = this._get()
+    if (get[key] == null) {
+      return false
+    }
     delete get[key]
     return this._set(get, true)
   },
 
   /**
    * Main destroy method.
-   * 
+   *
    * Deletes the whole session string.
-   * 
+   *
    * @returns true if successful; otherwise, false
    */
   _destroy: function() {
@@ -118,12 +121,12 @@ VueSession.install = function(Vue, options) {
   }
 
   Vue.prototype.$sess = {
-    
+
     /**
      * Get method.
-     * 
+     *
      * Get the parsed JSON string from storage.
-     * 
+     *
      * @param {any} key The key of the data to be returned
      * @returns The whole session object or the value of the key
      */
@@ -133,9 +136,9 @@ VueSession.install = function(Vue, options) {
 
     /**
      * Set method.
-     * 
+     *
      * Add an object in the session.
-     * 
+     *
      * @param {any} obj The key-value pair to be added
      * @param {function} callback A callback function called after set
      * @returns Set or both set and callback result
@@ -146,15 +149,15 @@ VueSession.install = function(Vue, options) {
       if (typeof callback === 'function') {
         return { result: set, callback: callback(obj, set) }
       }
-      
+
       return set
     },
 
     /**
      * Exists method.
-     * 
+     *
      * Check if session or a specific key exists.
-     * 
+     *
      * @param {any} key The key to be checked
      * @returns true if exists; otherwise, false
      */
@@ -167,9 +170,9 @@ VueSession.install = function(Vue, options) {
 
     /**
      * Timer method.
-     * 
+     *
      * Call a function after some time if key exists.
-     * 
+     *
      * @param {any} key The key to be checked
      * @param {function} callback The function to be called
      * @param {function} timeout Returns the timeout milliseconds
@@ -181,16 +184,16 @@ VueSession.install = function(Vue, options) {
       if (typeof get === 'undefined' || typeof callback !== 'function' || typeof timeout !== 'function') {
         return false
       }
-      
+
       setTimeout(function() { callback(get) }, timeout(get))
       return true
     },
 
     /**
      * Timeout method.
-     * 
+     *
      * Deletes key-value pair in session.
-     * 
+     *
      * @param {any} key The key to be checked
      * @param {number} logged The key wherein an item or a user was logged in milliseconds
      * @param {number} until The timeout key with a value in milliseconds
@@ -205,28 +208,29 @@ VueSession.install = function(Vue, options) {
           callback(get, res)
         }
       }, function(get) {
-        return get[until] - (Date.now() - get[logged])
+        const msec = get[until] - (Date.now() - get[logged])
+        return msec < 0 ? 0 : msec
       })
     },
-    
+
     /**
      * Delete method.
-     * 
+     *
      * Remove a value with the specified key from the session.
-     * 
+     *
      * @param {any} key The key of the data to be removed
      * @returns true if successful; otherwise, false
      */
     delete: function(key) {
       return typeof key === 'string' ? self._delete(key) : false
     },
-    
+
     /**
-     * 
+     *
      * Destroy method.
-     * 
+     *
      * Deletes the whole session string.
-     * 
+     *
      * @returns true if successful; otherwise, false
      */
     destroy: function() {
@@ -234,7 +238,6 @@ VueSession.install = function(Vue, options) {
     }
 
   }
-
 }
 
 export default VueSession
